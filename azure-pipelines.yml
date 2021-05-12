@@ -49,7 +49,7 @@ stages:
     - task: AzureCLI@2
       displayName: "Helm Save & Push"
       inputs:
-        azureSubscription: 1dd5ca7b-c583-4e90-ad03-00d3325971b7
+        azureSubscription: xwliu-devops-np
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
