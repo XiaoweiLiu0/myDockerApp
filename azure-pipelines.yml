@@ -15,6 +15,8 @@ variables:
   containerRegistry: 'xwliucontainerregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
+  acrUrl: 'xwliucontainerregistry.azurecr.io'
+  repoName: 'xwliuhelloworld'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -44,3 +46,20 @@ stages:
         script: |
           docker rmi $(containerRegistry)/$(imageRepository):$(tag)
           docker system prune -a --force
+    - task: AzureCLI@2
+      displayName: "Helm Save & Push"
+      inputs:
+        azureSubscription: 1dd5ca7b-c583-4e90-ad03-00d3325971b7
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          appVersion="$(tag)"
+          echo "App version: $appVersion"
+          export HELM_EXPERIMENTAL_OCI=1
+          echo $servicePrincipalKey | helm registry login $(acrUrl) --username $servicePrincipalId --password-stdin
+          rm -rf *.tgz
+          helm chart save $(helm package --app-version "$appVersion" --version $(tag) . | grep -o '/.*.tgz') $(acrUrl)/helm/$(repoName)
+          helm chart push $(acrUrl)/helm/$(repoName):$(tag)
+          helm chart remove $(acrUrl)/helm/$(repoName):$(tag)
+        addSpnToEnvironment: true
+        workingDirectory: "helm/"
