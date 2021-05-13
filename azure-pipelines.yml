@@ -5,6 +5,10 @@
 trigger:
 - master
 
+variables:
+  template: variables.yml
+  vmImageName: 'ubuntu-latest'
+
 resources:
 - repo: self
     
@@ -14,10 +18,6 @@ stages:
   jobs:
   - job: Build
     displayName: Build
-    variables:
-    - template: variables.yml
-    - name: vmImageName
-      value: 'ubuntu-latest'
     pool:
       vmImage: $(vmImageName)
     steps:
@@ -27,7 +27,7 @@ stages:
         command: buildAndPush
         repository: ${{ variables.imageRepository }}
         dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
+        containerRegistry: ${{ variables.dockerRegistryServiceConnection }}
         tags: |
           $(tag)
     - task: Bash@3
