@@ -6,8 +6,9 @@ trigger:
 - master
 
 variables:
-  template: variables.yml
-  vmImageName: 'ubuntu-latest'
+  - template: variables.yml
+  - name: vmImageName
+    value: 'ubuntu-latest'
 
 resources:
 - repo: self
@@ -37,20 +38,20 @@ stages:
         script: |
           docker rmi $(containerRegistry)/$(imageRepository):$(tag)
           docker system prune -a --force
-    # - task: AzureCLI@2
-    #   displayName: "Helm Save & Push"
-    #   inputs:
-    #     azureSubscription: $(azureSubscription)
-    #     scriptType: bash
-    #     scriptLocation: inlineScript
-    #     inlineScript: |
-    #       appVersion="$(tag)"
-    #       echo "App version: $appVersion"
-    #       export HELM_EXPERIMENTAL_OCI=1
-    #       echo $servicePrincipalKey | helm registry login $(acrUrl) --username $servicePrincipalId --password-stdin
-    #       rm -rf *.tgz
-    #       helm chart save $(helm package --app-version "$appVersion" --version $(tag) . | grep -o '/.*.tgz') $(acrUrl)/helm/$(repoName)
-    #       helm chart push $(acrUrl)/helm/$(repoName):$(tag)
-    #       helm chart remove $(acrUrl)/helm/$(repoName):$(tag)
-    #     addSpnToEnvironment: true
-    #     workingDirectory: "helm/"
+    - task: AzureCLI@2
+      displayName: "Helm Save & Push"
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          appVersion="$(tag)"
+          echo "App version: $appVersion"
+          export HELM_EXPERIMENTAL_OCI=1
+          echo $servicePrincipalKey | helm registry login $(acrUrl) --username $servicePrincipalId --password-stdin
+          rm -rf *.tgz
+          helm chart save $(helm package --app-version "$appVersion" --version $(tag) . | grep -o '/.*.tgz') $(acrUrl)/helm/$(repoName)
+          helm chart push $(acrUrl)/helm/$(repoName):$(tag)
+          helm chart remove $(acrUrl)/helm/$(repoName):$(tag)
+        addSpnToEnvironment: true
+        workingDirectory: "helm/"
