@@ -1,5 +1,5 @@
 variables:
-  dockerRegistryServiceConnection: xwliu-container-registry-conn
+  dockerRegistryServiceConnection: xwliucontainerregistryconn
   imageRepository: 'xwliuhelloworld'
   containerRegistry: 'xwliucontainerregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
