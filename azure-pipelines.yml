@@ -7,11 +7,6 @@ trigger:
 
 resources:
 - repo: self
-
-variables:
-  - template: variables.yml
-  - name: vmImageName
-    value: 'ubuntu-latest'
     
 stages:
 - stage: Build
@@ -19,6 +14,10 @@ stages:
   jobs:
   - job: Build
     displayName: Build
+    variables:
+    - template: variables.yml
+    - name: vmImageName
+      value: 'ubuntu-latest'
     pool:
       vmImage: $(vmImageName)
     steps:
