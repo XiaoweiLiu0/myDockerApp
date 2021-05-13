@@ -4,6 +4,7 @@ variables:
   containerRegistry: 'xwliucontainerregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
+  helmTag: '0.1.$(Build.BuildId)'
   acrUrl: 'xwliucontainerregistry.azurecr.io'
   repoName: 'xwliuhelloworld'
   azureSubscription: 'xwliu-devops-np'

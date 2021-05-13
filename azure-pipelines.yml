@@ -50,8 +50,8 @@ stages:
           export HELM_EXPERIMENTAL_OCI=1
           echo $servicePrincipalKey | helm registry login $(acrUrl) --username $servicePrincipalId --password-stdin
           rm -rf *.tgz
-          helm chart save $(helm package --app-version "$appVersion" --version $(tag) . | grep -o '/.*.tgz') $(acrUrl)/helm/$(repoName)
-          helm chart push $(acrUrl)/helm/$(repoName):$(tag)
-          helm chart remove $(acrUrl)/helm/$(repoName):$(tag)
+          helm chart save $(helm package --app-version "$appVersion" --version $(helmTag) . | grep -o '/.*.tgz') $(acrUrl)/helm/$(repoName)
+          helm chart push $(acrUrl)/helm/$(repoName):$(helmTag)
+          helm chart remove $(acrUrl)/helm/$(repoName):$(helmTag)
         addSpnToEnvironment: true
         workingDirectory: "helm/"
