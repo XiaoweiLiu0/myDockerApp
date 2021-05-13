@@ -9,15 +9,7 @@ resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'xwliu-container-registry-conn'
-  imageRepository: 'xwliuhelloworld'
-  containerRegistry: 'xwliucontainerregistry.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
-  acrUrl: 'xwliucontainerregistry.azurecr.io'
-  repoName: 'xwliuhelloworld'
-
+  - template: variables.yml
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
@@ -34,7 +26,7 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        repository: $(imageRepository)
+        repository: ${{ variables.imageRepository }}
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
@@ -49,7 +41,7 @@ stages:
     - task: AzureCLI@2
       displayName: "Helm Save & Push"
       inputs:
-        azureSubscription: xwliu-devops-np
+        azureSubscription: $(azureSubscription)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
