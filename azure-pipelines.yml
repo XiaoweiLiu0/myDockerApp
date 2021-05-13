@@ -10,7 +10,8 @@ resources:
 
 variables:
   - template: variables.yml
-  - vmImageName: 'ubuntu-latest'
+  - name: vmImageName
+    value: 'ubuntu-latest'
     
 stages:
 - stage: Build
