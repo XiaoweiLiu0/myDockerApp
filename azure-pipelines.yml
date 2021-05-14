@@ -48,3 +48,33 @@ stages:
           helm chart remove $(acrUrl)/helm/$(repoName):$(helmTag)
         addSpnToEnvironment: true
         workingDirectory: "helm/"
+  - deployment: "Deploy"
+    displayName: "Deploy"
+    environment: deploy-test
+    timeoutInMinutes: 300
+    variables:
+      - template: variables.yaml
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - download: none
+            - checkout: none
+            - task: AzureCLI@2
+              displayName: "Helm upgrade"
+              inputs:
+                azureSubscription: ${{ variables.azureSubscription }}
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  export HELM_EXPERIMENTAL_OCI=1
+                  az aks get-credentials --name $(aksName) --resource-group $(aksResourceGroup)
+                  kubectl config use-context $(aksName)
+                  echo $servicePrincipalKey | helm registry login $(acrUrl) --username $servicePrincipalId --password-stdin
+                  helm chart pull $(acrUrl)/helm/$(repoName):$(major).$(minor).$(patch)
+                  rm -rf ./charts
+                  helm chart export $(acrUrl)/helm/$(repoName):$(major).$(minor).$(patch) --destination ./charts
+                  cd ./charts
+                  ls -la
+                  helm upgrade -f values.yaml -n testchart --install --create-namespace --wait $(repoName) .
+                addSpnToEnvironment: true

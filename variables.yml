@@ -8,3 +8,5 @@ variables:
   acrUrl: 'xwliucontainerregistry.azurecr.io'
   repoName: 'XwliuHelloWorld-2'
   azureSubscription: 'xwliu-devops-np'
+  aksName: xwliuaks
+  aksResourceGroup: dev
