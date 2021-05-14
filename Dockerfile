@@ -1,4 +1,4 @@
-FROM scratch
+FROM busybox
 COPY hello /
-CMD ["/hello xwliu's cron job"]
+RUN echo "hell xwliu's cron job"
 RUN echo $StorageAccountName
