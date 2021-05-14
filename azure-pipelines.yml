@@ -31,13 +31,6 @@ stages:
         containerRegistry: ${{ variables.dockerRegistryServiceConnection }}
         tags: |
           $(tag)
-    - task: Bash@3
-      displayName: "Docker Clean"
-      inputs:
-        targetType: "inline"
-        script: |
-          docker rmi $(containerRegistry)/$(imageRepository):$(tag)
-          docker system prune -a --force
     - task: AzureCLI@2
       displayName: "Helm Save & Push"
       inputs:
