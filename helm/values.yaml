@@ -1,0 +1,37 @@
+replicaCount: 1
+
+image:
+  repository: xwliucontainerregistry.azurecr.io/xwliuhelloworld
+  pullPolicy: Always
+  tag: ""
+
+fullnameOverride: "xwliu-cronjob"
+
+keyvault:
+  enabled: true
+  userAssignedIdentityID: a5b36c07-df55-4958-a0a4-aa8355c7f00e
+  tenantId: 6fecd065-cb31-41b4-985c-60f2fdf1720f
+  vaults:
+    infra:
+      name: "infra-Zo7WE"
+      secretObjects:
+        - secretName: infra-secret
+          type: Opaque
+          labels:
+            environment: qa
+          data:
+            - objectName: cwpsandboxdatalakea9nfileShareStorageName
+              key: storageAccountName
+      objects: |
+        array:
+          - |
+            objectName: cwpsandboxdatalakea9nfileShareStorageName
+            objectType: secret
+            objectVersion: ""
+
+env:
+  - name: "StorageAccountName"
+    valueFrom:
+      secretKeyRef:
+        name: infra-secret
+        key: storageAccountName 

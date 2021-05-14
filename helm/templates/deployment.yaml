@@ -1,44 +1,27 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: app-secret-2
-type: Opaque
-stringData:
-  dbconnstr: this-is-db-connection-string-in-secret
-  username: admin
-  password: KuBeRnEtEs
----
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: hello-2
+  name: {{ .Values.fullnameOverride }}
 spec:
-  schedule: "*/10 * * * *"
+  schedule: "*/1 * * * *"
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: hello
-            image: busybox
+          - name: {{ .Values.fullnameOverride }}
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- with .Values.env }}
             env:
-            - name: DBCONNECTIONSTRING
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: dbconnstr
-            - name: USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: username
-            - name: PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret
-                  key: password
-            command:
-            - /bin/sh
-            - -c
-            - date; echo db:$DBCONNECTIONSTRING user:$USERNAME pass:$PASSWORD
+              {{- toYaml . | nindent 12 }}
+            {{- end}}
+            {{- if .Values.keyvault }}
+            volumeMounts:
+              {{- range $key, $value := .Values.keyvault.vaults }}
+              - name: "{{ .Values.fullnameOverride }}-{{ $key | lower }}"
+                mountPath: "/mnt/{{ $key }}-secrets-store"
+                readOnly: true
+              {{- end }}
+            {{- end }}
           restartPolicy: OnFailure
