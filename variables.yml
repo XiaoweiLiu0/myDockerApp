@@ -6,5 +6,5 @@ variables:
   tag: '$(Build.BuildId)'
   helmTag: '0.1.$(Build.BuildId)'
   acrUrl: 'xwliucontainerregistry.azurecr.io'
-  repoName: 'xwliuhelloworld'
+  repoName: 'xwliuhelloworld-1'
   azureSubscription: 'xwliu-devops-np'

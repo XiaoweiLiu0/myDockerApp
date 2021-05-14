@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret-2
+type: Opaque
+stringData:
+  dbconnstr: this-is-db-connection-string-in-secret
+  username: admin
+  password: KuBeRnEtEs
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hello-2
+spec:
+  schedule: "*/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            env:
+            - name: DBCONNECTIONSTRING
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: dbconnstr
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: password
+            command:
+            - /bin/sh
+            - -c
+            - date; echo db:$DBCONNECTIONSTRING user:$USERNAME pass:$PASSWORD
+          restartPolicy: OnFailure
