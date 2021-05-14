@@ -72,7 +72,7 @@ stages:
                   helm chart pull $(acrUrl)/helm/$(repoName):$(helmTag)
                   rm -rf ./charts
                   helm chart export $(acrUrl)/helm/$(repoName):$(helmTag) --destination ./charts
-                  cd ./charts
+                  cd ./charts/hello
                   ls -la
                   helm upgrade -f values.yaml -n testchart --install --create-namespace --wait $(repoName) .
                 addSpnToEnvironment: true
