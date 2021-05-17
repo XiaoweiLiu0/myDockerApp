@@ -9,7 +9,7 @@ fullnameOverride: "xwliu-cronjob"
 
 keyvault:
   enabled: true
-  userAssignedIdentityID: a5b36c07-df55-4958-a0a4-aa8355c7f00e
+  userAssignedIdentityID: 4256759f-51b8-4390-9d32-beb1ac5c22d3
   tenantId: 6fecd065-cb31-41b4-985c-60f2fdf1720f
   vaults:
     infra:
@@ -33,5 +33,5 @@ env:
   - name: "StorageAccountName"
     valueFrom:
       secretKeyRef:
-        name: infra-secret
+        name: infra
         key: storageAccountName 
