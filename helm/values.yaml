@@ -15,7 +15,7 @@ keyvault:
     infra:
       name: "infra-Zo7WE"
       secretObjects:
-        - secretName: infra-secret
+        - secretName: infra
           type: Opaque
           labels:
             environment: qa
