@@ -51,6 +51,7 @@ stages:
   - deployment: "Deploy"
     displayName: "Deploy"
     environment: deploy-test
+    dependsOn: ["Build"]
     timeoutInMinutes: 300
     strategy:
       runOnce:
@@ -73,6 +74,5 @@ stages:
                   rm -rf ./charts
                   helm chart export $(acrUrl)/helm/$(repoName):$(helmTag) --destination ./charts
                   cd ./charts/hello
-                  ls -la
-                  helm upgrade -f values.yaml -n testchart --install --create-namespace --wait $(repoName) .
+                  helm upgrade -f values.yaml --install --create-namespace --wait $(repoName) .
                 addSpnToEnvironment: true
